@@ -4,14 +4,14 @@ import seaborn as sb
 import matplotlib.pyplot as plt
 import pandas as pd
 
-def SetPageConfig(title):
+def SetPageConfig(title='AT'):
     st.set_page_config(
-        page_title=title,
+        #page_title=title,
         layout="wide")
 
 def SetTheme():
     if 'sb_theme' not in st.session_state:
-        with open("Streamlit/seabornTheme.json", 'r') as j:
+        with open("seabornTheme.json", 'r') as j:
             st.session_state['sb_theme'] = json.load(j)
     sb.set_theme(palette= st.session_state['sb_theme']['palette'],style= st.session_state['sb_theme']['style'])
     plt.rcParams.update(st.session_state['sb_theme']['plt_rcParams'])
