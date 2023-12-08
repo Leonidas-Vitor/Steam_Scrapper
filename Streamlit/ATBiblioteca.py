@@ -18,10 +18,23 @@ def SetTheme():
 
 def ReadCSV(name,path):
     if name not in st.session_state:
-        st.session_state[name] = pd.read_csv(path)
+        st.session_state[name] = pd.read_csv(path,engine='pyarrow')
     return st.session_state[name]
 
 def PreserveCSV(name,df):
     if name in st.session_state:
         st.session_state[name] = df
     return st.session_state[name]
+
+def ReadJson(name,path):
+    if name not in st.session_state:
+        st.session_state[name] = pd.read_json(path)
+    return st.session_state[name]
+
+def PreserveJson(name,df):
+    if name in st.session_state:
+        st.session_state[name] = df
+    return st.session_state[name]
+
+def GetBasicTextMarkdown(font_size: float, text: str):
+    return f"""<p style='text-align: center; font-size:{font_size}px;'><b>{text}</b></p>"""

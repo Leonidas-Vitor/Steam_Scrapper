@@ -2,6 +2,8 @@ import streamlit as st
 import ATBiblioteca as at_lib
 from st_pages import Page, show_pages, add_page_title
 
+at_lib.SetPageConfig()
+
 #add_page_title()
 show_pages(
     [
@@ -14,7 +16,7 @@ show_pages(
     ]
 )
 
-at_lib.SetPageConfig()
+
 at_lib.SetTheme()
 
 html_p = """<p style='text-align: center; font-size:%spx;'><b>%s</b></p>"""
