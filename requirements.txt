@@ -3,10 +3,4 @@ pandas
 numpy
 matplotlib
 st_pages
-sklearn
-
-sklearn.model_selection
-sklearn.model_selection
-sklearn.linear_model
-sklearn.metrics
-sklearn.preprocessing 
+scikit-learn
