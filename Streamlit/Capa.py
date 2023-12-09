@@ -1,9 +1,21 @@
 import streamlit as st
-import ATBiblioteca as at_lib
 from st_pages import Page, show_pages, add_page_title
 
-at_lib.SetPageConfig()
+def SetPageConfig(title='AT'):
+    st.set_page_config(
+        #page_title=title,
+        layout="wide")
 
+def SetTheme():
+    if 'sb_theme' not in st.session_state:
+        with open("seabornTheme.json", 'r') as j:
+            st.session_state['sb_theme'] = json.load(j)
+    sb.set_theme(palette= st.session_state['sb_theme']['palette'],style= st.session_state['sb_theme']['style'])
+    plt.rcParams.update(st.session_state['sb_theme']['plt_rcParams'])
+
+def GetBasicTextMarkdown(font_size: float, text: str, align = 'center'):
+    return f"""<p style='text-align: {align}; font-size:{font_size}px;'><b>{text}</b></p>"""
+    
 #add_page_title()
 show_pages(
     [
@@ -16,8 +28,6 @@ show_pages(
     ]
 )
 
-
-at_lib.SetTheme()
 
 html_p = """<p style='text-align: center; font-size:%spx;'><b>%s</b></p>"""
 

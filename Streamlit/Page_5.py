@@ -1,5 +1,5 @@
-import ATBiblioteca as at_lib
 import matplotlib.pyplot as plt
+import json
 import numpy as np
 import pandas as pd
 import seaborn as sb
@@ -9,8 +9,20 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
-at_lib.SetPageConfig()
-at_lib.SetTheme()
+def SetPageConfig(title='AT'):
+    st.set_page_config(
+        #page_title=title,
+        layout="wide")
+
+def SetTheme():
+    if 'sb_theme' not in st.session_state:
+        with open("seabornTheme.json", 'r') as j:
+            st.session_state['sb_theme'] = json.load(j)
+    sb.set_theme(palette= st.session_state['sb_theme']['palette'],style= st.session_state['sb_theme']['style'])
+    plt.rcParams.update(st.session_state['sb_theme']['plt_rcParams'])
+
+def GetBasicTextMarkdown(font_size: float, text: str, align = 'center'):
+    return f"""<p style='text-align: {align}; font-size:{font_size}px;'><b>{text}</b></p>"""
 
 st.header('Regressão linear',divider=True)
 
@@ -39,6 +51,8 @@ option = st.selectbox(
     'Tower Defense','Match 3','Puzzle-Platformer','Puzzle','2D Platformer','3D Platformer','Battle Royale'),index=7)
 
 df_filtred = df_redux[df_redux['main_genre'] == option]
+
+#---------------- Faltou lugar para upar um novo csv
 
 with st.expander('Dataset preparado'):
     st.markdown(at_lib.GetBasicTextMarkdown(20,
