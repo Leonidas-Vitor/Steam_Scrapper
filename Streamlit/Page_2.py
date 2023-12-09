@@ -15,14 +15,12 @@ SetPageConfig()
 
 def SetTheme():
     if 'sb_theme' not in st.session_state:
-        path = os.path.dirname(__file__)
-        my_file = path+'/seabornTheme.json'
-        with open(my_file, 'r') as j:
+        with open('seabornTheme.json', 'r') as j:
             st.session_state['sb_theme'] = json.load(j)
     sb.set_theme(palette= st.session_state['sb_theme']['palette'],style= st.session_state['sb_theme']['style'])
     plt.rcParams.update(st.session_state['sb_theme']['plt_rcParams'])
 
-#SetTheme()
+SetTheme()
 
 def GetBasicTextMarkdown(font_size: float, text: str, align = 'center'):
     return f"""<p style='text-align: {align}; font-size:{font_size}px;'><b>{text}</b></p>"""
@@ -101,7 +99,7 @@ st.subheader('Dataset reduzido')
 #except Exception as e:
 #    df_redux = at_lib.ReadCSV('df_redux','SteamDatasetForStreamlit.csv').copy()
 
-df_redux = pd.read_csv('SteamDatasetForStreamlit.json')
+df_redux = pd.read_csv('SteamDatasetForStreamlit.csv',engine='pyarrow')
     
 #= at_lib.ReadCSV('df_redux','SteamDatasetForStreamlit.csv')
 st.dataframe(df_redux,hide_index=True,height=250)
