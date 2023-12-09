@@ -23,6 +23,7 @@ html_p = """<p style='text-align: center; font-size:%spx;'><b>%s</b></p>"""
 
 st.markdown('''<h1 style='text-align: center; '><b>INSTITUTO INFNET</b></h1>''',unsafe_allow_html = True)
 st.markdown(html_p % tuple([35,"ESCOLA SUPERIOR DE TECNOLOGIA"]),unsafe_allow_html=True)
+st.markdown(html_p % tuple([35,"TP9 - Projeto de Bloco"]),unsafe_allow_html=True)
 st.divider()
 
 github_link = '''https://github.com/Leonidas-Vitor/Steam_Scrapper.git'''
@@ -32,13 +33,13 @@ columns = st.columns([0.6,0.4])
 with columns[0]:
     st.markdown(html_p % tuple([25,'Aluno: Leônidas Almeida']),unsafe_allow_html = True)
     st.markdown(html_p % tuple([25,f'E-mail: <a href= mailto:{email}>{email}</a>']),unsafe_allow_html = True)
-    st.markdown(html_p % tuple([25,f'GitHub: <a href={github_link}>Link para o repositório</a><h3>']),unsafe_allow_html = True)
+    st.markdown(html_p % tuple([25,f'GitHub: <a href={github_link}>Link para o repositório</a>']),unsafe_allow_html = True)
     st.markdown(html_p % tuple([25,'Introdução:']),unsafe_allow_html = True)
     st.text('''
-    Esta aplicação foi criada com o propósito de analisar os jogos da loja Steam e então estimar quantas 
-    vendas um novo jogo hipotético teria, baseado em suas principais características e então avaliar se 
-    vale o investimento nele ou não.
-    ''')
+        Esta aplicação foi criada com o propósito de analisar os jogos da loja Steam e então estimar 
+        quantas  vendas um novo jogo hipotético teria, baseado em suas principais características e 
+        então avaliar se vale o investimento nele ou não.
+        ''')
     st.text('''
     O modelo de regressão linear foi escolhido por ser um modelo simples e de fácil interpretação, 
     a avaliação do modelo será feita através das métricas de MSE, RMSE e MAE.
@@ -46,11 +47,21 @@ with columns[0]:
 with columns[1]:
     st.image('Infnet_logo.png',width=400)
 
-#tabs = st.tabs(['Instruções','Observações','Notas do autor'])
-#with tabs[0]:
-#    st.write('''A aplicação foi organizada em páginas, que podem ser acessadas pela barra lateral à esquerda.''')
-#with tabs[1]:
-#    st.write('Na última página há um breve registro de dificuldades encontradas na realização do trabalho')
-#with tabs[2]:
-#    st.markdown('<p> Dá bastante trabalho organizar a estética de uma aplicação web	&#129394;</P>',unsafe_allow_html=True)
+#at_lib.ReadCSV('df_redux','SteamDatasetForStreamlit.csv')
+
+tabs = st.tabs(['Informes','Navegação','Observações'])
+with tabs[0]:
+    st.write('''Para tornar a aplicação mais rápida os dados são carregados apenas uma vez e então manipulados\
+        e armazenados na memória, por isso aplicar um rerun irá modificar gráficos, tabelas e valores, pois os\
+        dados já foram modificados anteriormente e o rerun não os carrega novamente. Recomenda-se atualizar a página\
+        (F5) ao invés de aplicar um rerun.''')
+with tabs[1]:
+    st.write('''A aplicação foi organizada em páginas, que podem ser acessadas pela barra lateral à esquerda.''')
+with tabs[2]:
+    st.markdown('''<p>
+    Infelizmente não foi possível terminar totalmente esse trabalho/estudo a tempo, por isso algumas funcionalidades\
+    não estão disponíveis, como a página sobre a aquisição dos dados e algumas funcionalidades da página de regressão linear.
+    O trabalho será aprimorado nos próximos dias/semanas para que atinja o nível esperado.
+    </P>
+    ''',unsafe_allow_html=True)
 #st.divider()

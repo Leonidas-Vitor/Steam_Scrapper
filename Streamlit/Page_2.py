@@ -78,7 +78,15 @@ with st.expander("Amostra do dataset original"):
     st.dataframe(df_sample,hide_index=True)
 
 st.subheader('Dataset reduzido')
-df_redux = at_lib.ReadCSV('df_redux','SteamDatasetForStreamlit.csv')
+
+#try:
+#    df_redux = st.session_state['df_redux'].copy()
+#except Exception as e:
+#    df_redux = at_lib.ReadCSV('df_redux','SteamDatasetForStreamlit.csv').copy()
+
+df_redux = pd.read_csv('SteamDatasetForStreamlit.csv',engine='pyarrow')
+    
+#= at_lib.ReadCSV('df_redux','SteamDatasetForStreamlit.csv')
 st.dataframe(df_redux,hide_index=True,height=250)
 
 #buffer = io.StringIO()
@@ -292,13 +300,51 @@ with cols[2]:
 st.markdown(at_lib.GetBasicTextMarkdown(20,
     '''
     Infelizmente a amostra de jogos com dados no HTLB é bem pequena, apenas 37.21% dos jogos possuem dados no HTLB,\
-    o que irá nos exigir decidir entre inferir os dados faltantes ou remover os jogos sem dados no HTLB.
+    o que irá nos exigir decidir entre inferir os dados faltantes ou remover os jogos sem dados no HTLB. Parte dessa\
+    ausência de dados pode ser explicada por alterações de nome do jogo entre a loja Steam e o HTLB, como por exemplo\
+    Divinity Original Sin 2, que na Steam está como Divinity: Original Sin 2 - Definitive Edition e no HTLB está\
+    apenas Divinity Original Sin 2, o que inviabilizou a busca automática dos dados. Outra parte dessa ausência de\
+    dados pode ser explicada pela baixa popularidade do jogo. Também suspeita-se de que haja uma correlação entre\
+    preço e a probabilidade de ter dados no HLTB.
     '''),unsafe_allow_html=True)
 
-#for col in df_redux.columns:
-#    st.text(df_redux[col].value_counts())
+st.divider()
+
+st.markdown(at_lib.GetBasicTextMarkdown(20,
+    '''
+    Além de termos poucos dados a respeito de duração, será que podemos confiar neles?
+    '''),unsafe_allow_html=True)
+
+fig, ax = plt.subplots(figsize=(10,5))
+sb.histplot(df_redux,x='hltb_similarity', ax=ax, alpha=1.0,shrink=0.85,bins=10)
+
+st.pyplot(fig)
+
+cols = st.columns([0.4,0.6])
+with cols[0]:
+    perfectSimilarity = (df_redux[df_redux['hltb_similarity'] == 1]['hltb_status'].count()/df_redux['hltb_similarity'].count())*100
+    st.metric(label="Jogos com nome \"perfeitamente\" similar", value=f'{perfectSimilarity:.2f}%')
+    st.text('''
+        No geral quando a similaridade do HLTB é igual a 1 temos uma 
+        correlação entre os nomes dos jogos. Contudo, é possível observar 
+        algumas inconsistências, como por exemplo, que apesar de serem 
+        identificados como iguais, mas não são, como é o caso com
+        Master of the Monster Lair e Dungeon Maker. O nos leva a ter 
+        menos confiança nesses dados, porém por serem casos bem isolados 
+        iremos tolerá-los, já que é difícil identificar esses casos de 
+        forma automática. Ao lado temos um recorte onde esses casos são 
+        mais prováveis ocorrerem, pois o nome da coluna \'name\' é 
+        diferente do nome na coluna \'hltb_name\'.
+        ''')
+with cols[1]:
+    st.dataframe(df_redux[
+        (df_redux['hltb_similarity'] == 1) & (df_redux['name'].str.lower() != df_redux['hltb_name'].str.lower())
+        ][['hltb_similarity','hltb_name','name']],use_container_width=True,hide_index=True)
 
 st.divider()
+
+
+### Incluir a comparação entre scrap sucess e steamspy scrap sucess, para provar que quando acha em um acha no outro
 
 st.markdown(at_lib.GetBasicTextMarkdown(25,
     '''

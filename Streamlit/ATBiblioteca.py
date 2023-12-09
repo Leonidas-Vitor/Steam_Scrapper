@@ -36,5 +36,5 @@ def PreserveJson(name,df):
         st.session_state[name] = df
     return st.session_state[name]
 
-def GetBasicTextMarkdown(font_size: float, text: str):
-    return f"""<p style='text-align: center; font-size:{font_size}px;'><b>{text}</b></p>"""
+def GetBasicTextMarkdown(font_size: float, text: str, align = 'center'):
+    return f"""<p style='text-align: {align}; font-size:{font_size}px;'><b>{text}</b></p>"""
