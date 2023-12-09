@@ -3,9 +3,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sb
 import streamlit as st
-import json
 import ast
-import os
+import json
 
 def SetPageConfig(title='AT'):
     st.set_page_config(
@@ -16,14 +15,12 @@ SetPageConfig()
 
 def SetTheme():
     if 'sb_theme' not in st.session_state:
-        path = os.path.dirname(__file__)
-        my_file = path+'/seabornTheme.json'
-        with open(my_file, 'r') as j:
+        with open("seabornTheme.json", 'r') as j:
             st.session_state['sb_theme'] = json.load(j)
     sb.set_theme(palette= st.session_state['sb_theme']['palette'],style= st.session_state['sb_theme']['style'])
     plt.rcParams.update(st.session_state['sb_theme']['plt_rcParams'])
 
-#SetTheme()
+SetTheme()
 
 def GetBasicTextMarkdown(font_size: float, text: str, align = 'center'):
     return f"""<p style='text-align: {align}; font-size:{font_size}px;'><b>{text}</b></p>"""
@@ -123,6 +120,7 @@ with cols[2]:
 
 df_redux = df_redux[(df_redux['is_free'] == False)]
 
+
 st.divider()
 cols = st.columns([0.5,0.2,0.3])
 #Já lançado?
@@ -132,7 +130,6 @@ with cols[0]:
     Jogos não lançados não podem ser analisados, pois ainda não foram comercializados
     '''),unsafe_allow_html=True)
 with cols[2]:
-    st.text((df_redux['release_date'].str['coming_soon'] == True))
     notLaunched = df_redux[(df_redux['release_date'].str['coming_soon'] == True)]['steam_appid'].count()
     notLaunchedPercent = (notLaunched/df_redux['steam_appid'].count())*100
     st.metric(label="Jogos removidos", value=f'{notLaunched}', delta=f'-{notLaunchedPercent:.2f}%')
@@ -247,6 +244,7 @@ st.markdown(GetBasicTextMarkdown(20,
 def GetMainGenre(tags):
     if (type(tags) == str):
         tags= ast.literal_eval(tags)
+
     if (type(tags) == dict):
         #return max(tags, key=tags.get)
         main_genre = {}
@@ -293,11 +291,14 @@ with cols[0]:
         '''),unsafe_allow_html=True)
 
 def IsEarlyAcess(genres):
+    '''
+    Identifica se um jogo está em early acess através da coluna genres que é uma lista de dicionários de gêneros
+    '''
     if (type(genres) == str and genres != ''):
         try:
             genres = ast.literal_eval(genres)
         except Exception as e:
-            st.text(genres)
+            #st.text(genres)
             pass
     try:
         for g in genres:
