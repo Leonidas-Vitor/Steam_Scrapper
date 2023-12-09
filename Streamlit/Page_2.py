@@ -14,7 +14,9 @@ SetPageConfig()
 
 def SetTheme():
     if 'sb_theme' not in st.session_state:
-        with open("seabornTheme.json", 'r') as j:
+        path = os.path.dirname(__file__)
+        my_file = path+'/seabornTheme.json'
+        with open(my_file, 'r') as j:
             st.session_state['sb_theme'] = json.load(j)
     sb.set_theme(palette= st.session_state['sb_theme']['palette'],style= st.session_state['sb_theme']['style'])
     plt.rcParams.update(st.session_state['sb_theme']['plt_rcParams'])
@@ -88,7 +90,7 @@ with st.expander("Colunas do dataset original"):
 #st.text(path_json)
 
 with st.expander("Amostra do dataset original"):
-    df_sample = pd.read_csv('SteamDatasetRawSample.csv',engine='pyarrow')
+    df_sample = pd.read_json('SteamDatasetRawSample.json')
     st.dataframe(df_sample,hide_index=True)
 
 st.subheader('Dataset reduzido')
@@ -98,7 +100,7 @@ st.subheader('Dataset reduzido')
 #except Exception as e:
 #    df_redux = at_lib.ReadCSV('df_redux','SteamDatasetForStreamlit.csv').copy()
 
-df_redux = pd.read_csv('SteamDatasetForStreamlit.csv',engine='pyarrow')
+df_redux = pd.read_json('SteamDatasetForStreamlit.json')
     
 #= at_lib.ReadCSV('df_redux','SteamDatasetForStreamlit.csv')
 st.dataframe(df_redux,hide_index=True,height=250)

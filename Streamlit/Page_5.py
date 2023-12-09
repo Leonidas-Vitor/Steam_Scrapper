@@ -18,7 +18,9 @@ SetPageConfig()
 
 def SetTheme():
     if 'sb_theme' not in st.session_state:
-        with open("seabornTheme.json", 'r') as j:
+        path = os.path.dirname(__file__)
+        my_file = path+'/seabornTheme.json'
+        with open(my_file, 'r') as j:
             st.session_state['sb_theme'] = json.load(j)
     sb.set_theme(palette= st.session_state['sb_theme']['palette'],style= st.session_state['sb_theme']['style'])
     plt.rcParams.update(st.session_state['sb_theme']['plt_rcParams'])
@@ -40,7 +42,7 @@ st.header('Regressão linear',divider=True)
 #    Teste2
 #    '''),unsafe_allow_html=True)
 
-df_redux = pd.read_csv('SteamDatasetForStreamlitClean.csv',engine='pyarrow')
+df_redux = pd.read_json('SteamDatasetForStreamlitClean.json')
 
 df_redux['positive_reviews_percent'].fillna(0,inplace=True)
 df_redux.dropna(inplace=True,subset='commercialization_days')
