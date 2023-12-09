@@ -4,11 +4,14 @@ import pandas as pd
 import seaborn as sb
 import streamlit as st
 import ast
+import json
 
 def SetPageConfig(title='AT'):
     st.set_page_config(
         #page_title=title,
         layout="wide")
+
+SetPageConfig()
 
 def SetTheme():
     if 'sb_theme' not in st.session_state:
@@ -17,12 +20,14 @@ def SetTheme():
     sb.set_theme(palette= st.session_state['sb_theme']['palette'],style= st.session_state['sb_theme']['style'])
     plt.rcParams.update(st.session_state['sb_theme']['plt_rcParams'])
 
+SetTheme()
+
 def GetBasicTextMarkdown(font_size: float, text: str, align = 'center'):
     return f"""<p style='text-align: {align}; font-size:{font_size}px;'><b>{text}</b></p>"""
 
 st.header('Preparação dos dados',divider=True)
 
-st.markdown(at_lib.GetBasicTextMarkdown(25,
+st.markdown(GetBasicTextMarkdown(25,
     '''
     Agora iremos preparar os dados para a modelagem, para isso iremos criar novas colunas, remover colunas\
     que não serão mais utilizadas e tratar os dados com problemas de qualidade.
@@ -34,7 +39,7 @@ df_redux = pd.read_csv('SteamDatasetForStreamlit.csv',engine='pyarrow')
 df_redux.drop(df_redux[df_redux['scrap_status'] != 'Scrap_Sucess'].index,inplace=True)
 df_redux.drop(df_redux[df_redux['type'] != 'game'].index,inplace=True)
 
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     f'''
     O dataset atualmente possui {df_redux.shape[0]} linhas e {df_redux.shape[1]} colunas.
     '''),unsafe_allow_html=True)
@@ -45,27 +50,27 @@ st.divider()
 
 cols = st.columns([0.5,0.5])
 with cols[0]:
-    st.markdown(at_lib.GetBasicTextMarkdown(20,
+    st.markdown(GetBasicTextMarkdown(20,
     f'''
     1º Serão removidas as colunas que não nos servem para mais nada.
     ''',align = 'left'),unsafe_allow_html=True)
 
-    st.markdown(at_lib.GetBasicTextMarkdown(20,
+    st.markdown(GetBasicTextMarkdown(20,
     f'''
     2º Removeremos linhas que não atendem as premissas do estudo.
     ''',align = 'left'),unsafe_allow_html=True)
     
-    st.markdown(at_lib.GetBasicTextMarkdown(20,
+    st.markdown(GetBasicTextMarkdown(20,
     f'''
     3º Criaremos novas colunas para facilitar a manipulação dos dados.
     ''',align = 'left'),unsafe_allow_html=True)
 
-    st.markdown(at_lib.GetBasicTextMarkdown(20,
+    st.markdown(GetBasicTextMarkdown(20,
     f'''
     4º Uma última limpeza nos dados, baseado nas colunas novas.
     ''',align = 'left'),unsafe_allow_html=True)
 
-    st.markdown(at_lib.GetBasicTextMarkdown(20,
+    st.markdown(GetBasicTextMarkdown(20,
     f'''
     5º Por fim, algumas visualizações e análises após a preparação dos dados.
     ''',align = 'left'),unsafe_allow_html=True)
@@ -88,7 +93,7 @@ df_redux.drop(columns=['scrap_status','type','required_age','spy_status','hltb_s
 
 st.divider()
 
-st.markdown(at_lib.GetBasicTextMarkdown(25,
+st.markdown(GetBasicTextMarkdown(25,
     '''
     Agora removeremos diversas linhas que não atendem as premissas do estudo.
     '''),unsafe_allow_html=True)
@@ -103,7 +108,7 @@ df_redux['release_date'] = df_redux['release_date'].apply(ast.literal_eval)
 cols = st.columns([0.5,0.2,0.3])
 #É Gratuito?
 with cols[0]:
-    st.markdown(at_lib.GetBasicTextMarkdown(20,
+    st.markdown(GetBasicTextMarkdown(20,
         '''
         O jogo não deve ser gratuito, pois estamos analisando jogos que serão comercializados no modelo premium,\
         ou seja, os jogos tem um preço para serem adquiridos/jogados.
@@ -120,7 +125,7 @@ st.divider()
 cols = st.columns([0.5,0.2,0.3])
 #Já lançado?
 with cols[0]:
-    st.markdown(at_lib.GetBasicTextMarkdown(20,
+    st.markdown(GetBasicTextMarkdown(20,
     '''
     Jogos não lançados não podem ser analisados, pois ainda não foram comercializados
     '''),unsafe_allow_html=True)
@@ -135,7 +140,7 @@ st.divider()
 cols = st.columns([0.5,0.2,0.3])
 #Possui dados de tag?
 with cols[0]:
-    st.markdown(at_lib.GetBasicTextMarkdown(20,
+    st.markdown(GetBasicTextMarkdown(20,
     '''
     Jogos sem tags não podem ser comparados e/ou categorizados, portanto terão de ser removidos, contudo,\
     em outro momento se for necessário é possível obter as tags diretamente na página do jogos na loja Steam.
@@ -152,7 +157,7 @@ st.divider()
 cols = st.columns([0.5,0.2,0.3])
 #Possui dados de preço?
 with cols[0]:
-    st.markdown(at_lib.GetBasicTextMarkdown(20,
+    st.markdown(GetBasicTextMarkdown(20,
     '''
     O preço é um dado bem importante para o estudo e por serem poucos jogos sem essa informação, eles serão\
     removidos.
@@ -168,7 +173,7 @@ st.divider()
 cols = st.columns([0.5,0.2,0.3])
 #Possui dados de categoria?
 with cols[0]:
-    st.markdown(at_lib.GetBasicTextMarkdown(20,
+    st.markdown(GetBasicTextMarkdown(20,
     '''
     Algumas linhas não tinham dados na coluna categories e após uma breve investigação foi constatado que são ferramentas\
     para desenvolvedores e não jogos, portanto serão removidos.
@@ -182,7 +187,7 @@ df_redux = df_redux[df_redux['categories'] != '']
 
 st.divider()
 
-st.markdown(at_lib.GetBasicTextMarkdown(25,
+st.markdown(GetBasicTextMarkdown(25,
     '''
     Agora serão criadas as novas colunas que tornarão mais fácil a manipulação dos dados, além de remover colunas\
     que não serão mais utilizadas. O dataset resultante terá as seguintes colunas:
@@ -228,7 +233,7 @@ generosValidos = [
     'Tower Defense','Match 3','Puzzle-Platformer','Puzzle','2D Platformer','3D Platformer','Battle Royale']
 
 #with cols[0]:
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     Criação da coluna main_genre, ela é criada apartir da coluna tags, pegando a tag mais \"votada\" que estiver\
     dentro da nossa lista de gêneros válidos. A lista de gêneros válidos foi baseada em artigos de pesquisas\
@@ -280,7 +285,7 @@ df_redux['tags'] = df_redux['tags'].apply(lambda tags: OrganizeTags(tags))
 #------------ Acesso antecipado
 cols = st.columns([0.5,0.5])
 with cols[0]:
-    st.markdown(at_lib.GetBasicTextMarkdown(20,
+    st.markdown(GetBasicTextMarkdown(20,
         '''
         Criação da coluna isEarlyAcess, ela foi apartir da busca da palavra \'Early Access\' na coluna genres
         '''),unsafe_allow_html=True)
@@ -313,7 +318,7 @@ with cols[1]:
     st.table(df_redux[['isEarlyAcess']].value_counts().reset_index().rename(columns={0:'count'}))
 
 #------------ Data de lançamento
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     Coluna release_date agora está em formato datetime
     '''),unsafe_allow_html=True)
@@ -329,7 +334,7 @@ with columns[1]:
 #------------ Dias em comercialização
 df_redux['commercialization_days'] = (pd.Timestamp('2023/11/08') - df_redux['release_date']).dt.days
 #----------- Preço
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     Coluna price agora está em formato numérico
     '''),unsafe_allow_html=True)
@@ -347,7 +352,7 @@ with columns[1]:
 df_redux.drop(columns=['price_overview'],inplace=True)
 
 #----------- Modos de jogo
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     Colunas hasSingleplayer, hasMultiplayer e hasCoop são criadas apartir da coluna categories que é composta por dicts.
     '''),unsafe_allow_html=True)
@@ -371,7 +376,7 @@ df_redux['hasCoop'] = df_redux['categories'].apply(lambda s : ContainsTargetCate
 
 st.dataframe(df_redux[['name','hasSingleplayer','hasMultiplayer','hasCoop']].sample(5),use_container_width=True)
 #----------- Avaliações
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     As total_reviews e positive_revirews_percent são criadas apartir das colunas positive e negative, que são a quantidade\
     de avaliações positivas e negativas respectivamente. A coluna total_reviews é a soma das duas colunas e a coluna\
@@ -383,7 +388,7 @@ df_redux['positive_reviews_percent'] = df_redux['positive'].copy()/df_redux['tot
 
 st.dataframe(df_redux[['name','total_reviews','positive_reviews_percent']].sample(5),use_container_width=True)
 #----------- Línguas suportadas
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     A coluna total_supported_languages é criada apartir da coluna supported_languages, que é uma lista de\
     línguas suportadas pelo jogo.
@@ -395,7 +400,7 @@ df_redux['total_supported_languages'] = df_redux['total_supported_languages'].ap
 
 st.dataframe(df_redux[['name','supported_languages','total_supported_languages']].sample(5),use_container_width=True)
 #----------- Auto publicação
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     A coluna de self_published_percent é uma estimativa do grau de auto publicação do jogo, ou seja, quanto maior\
     o valor, maior a probabilidade do jogo ser auto publicado. Essa coluna é criada apartir da comparação entre\
@@ -431,7 +436,7 @@ df_redux['developers'] = df_redux['developers'].apply(lambda x: ', '.join(x) if 
 
 st.dataframe(df_redux[['name','developers','publishers','self_published_percent']].sample(5),use_container_width=True)
 #----------- Duração
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     Existe uma grande ausência de dados de duração, para resolver esse problema iremos inferir os dados faltantes\
     através da mediana da duração dos jogos do mesmo gênero. Jogos que tiverem uma similaridade de nome menor que\
@@ -454,7 +459,7 @@ def FillDuration(row):
 df_redux = df_redux.apply(FillDuration,axis=1)
 
 #----------- Conquistas
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     Como não dá para saber se os desenvolvedores implementaram ou não conquista no jogo, iremos completar com 0\
     os dados faltantes. Uma vez que se o desenvolver tivesse implementado conquistas provavelmente os dados estariam\
@@ -477,7 +482,7 @@ st.divider()
 df_redux.drop(columns=['is_free','genres','supported_languages','categories','positive','negative',
     'developers','publishers','achievements','hltb_similarity','steamspy_owners'],inplace=True)
 
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     f'''
     O dataset atualmente possui {df_redux.shape[0]} linhas e {df_redux.shape[1]} colunas.
     '''),unsafe_allow_html=True)

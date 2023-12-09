@@ -3,11 +3,14 @@ import numpy as np
 import pandas as pd
 import seaborn as sb
 import streamlit as st
+import json
 
 def SetPageConfig(title='AT'):
     st.set_page_config(
         #page_title=title,
         layout="wide")
+
+SetPageConfig()
 
 def SetTheme():
     if 'sb_theme' not in st.session_state:
@@ -15,6 +18,8 @@ def SetTheme():
             st.session_state['sb_theme'] = json.load(j)
     sb.set_theme(palette= st.session_state['sb_theme']['palette'],style= st.session_state['sb_theme']['style'])
     plt.rcParams.update(st.session_state['sb_theme']['plt_rcParams'])
+
+SetTheme()
 
 def GetBasicTextMarkdown(font_size: float, text: str, align = 'center'):
     return f"""<p style='text-align: {align}; font-size:{font_size}px;'><b>{text}</b></p>"""
@@ -102,7 +107,7 @@ st.dataframe(df_redux,hide_index=True,height=250)
 #df_redux.info(buf=buffer)
 #s = buffer.getvalue()
 
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     f'''
     O dataset reduzido possui {df_redux.shape[0]} linhas e {df_redux.shape[1]} colunas, sendo que\
     {(df_redux['scrap_status'] != 'Scrap_Sucess').sum()} linhas não possuem dados, indicando um\
@@ -113,14 +118,14 @@ df_redux.drop(df_redux[df_redux['scrap_status'] != 'Scrap_Sucess'].index,inplace
 
 st.divider()
 
-st.markdown(at_lib.GetBasicTextMarkdown(25,
+st.markdown(GetBasicTextMarkdown(25,
     '''
     Esses são os tipos de cada coluna do dataset nesse momento:
     '''),unsafe_allow_html=True)
     
 st.table(df_redux.dtypes)
 
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     É possível observar que muitas colunas são do tipo object e além disso algumas delas são do tipo dicionário, o que\
     dificulta a manipulação dos dados. Na próxima página iremos gerar novas colunas para facilitar a manipulação\
@@ -129,7 +134,7 @@ st.markdown(at_lib.GetBasicTextMarkdown(20,
 
 st.divider()
 
-st.markdown(at_lib.GetBasicTextMarkdown(25,
+st.markdown(GetBasicTextMarkdown(25,
     '''
     Vamos observar como está a distribuição dos dados de acordo com o tipo de app.
     '''),unsafe_allow_html=True)
@@ -139,7 +144,7 @@ sb.histplot(df_redux,x=df_redux['type'], hue=df_redux['type'],ax=ax, alpha=1.0,s
 
 st.pyplot(fig)
 
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     Podemos observar que temos muitas DLCs e demos, além de outros tipos de apps que não são jogos e portanto\
     iremos remove-los também pois não são relevantes para o estudo.
@@ -149,7 +154,7 @@ df_redux.drop(df_redux[df_redux['type'] != 'game'].index,inplace=True)
 
 st.divider()
 
-st.markdown(at_lib.GetBasicTextMarkdown(25,
+st.markdown(GetBasicTextMarkdown(25,
     '''
     Agora a distribuição das idades recomendadas para os jogos.
     '''),unsafe_allow_html=True)
@@ -159,7 +164,7 @@ sb.histplot(df_redux,x=df_redux['required_age'], hue=df_redux['required_age'],ax
 
 st.pyplot(fig)
 
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     f'''
     Há uma esmadora predominância de idades recomenda 0 anos, algo que é extremamente improvável. Provavelmente\
     esse dado só é crítico de ser colocado na loja para jogos de conteúdo adulto e/ou violento, portanto é muito\
@@ -179,7 +184,7 @@ with cols[2]:
 
 st.divider()
 
-st.markdown(at_lib.GetBasicTextMarkdown(25,
+st.markdown(GetBasicTextMarkdown(25,
     '''
     Vamos ver quais desenvolvedores fizeram mais jogos
     '''),unsafe_allow_html=True)
@@ -198,21 +203,21 @@ with cols[3]:
     st.metric(label="Desvio Padrão", value=f'{dev_df.std():.2f}')
 
 
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     Apesar do top 10 de desenvolvedores terem feito mais de 100 jogos, a média de jogos por desenvolvedor é de\
     apenas 1.65 e a mediana ainda mais baixa de 1 jogo por desenvolvedor, o que indica uma grande oscilação nos dados\
     algo confirmado pela elavado desvio padrão de 13.86.
     '''),unsafe_allow_html=True)
 
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     Além disso é bem curioso que tenhamos 3309 de jogos \"Sem\" desenvolvedora, vamos ver quais são esses jogos.
     '''),unsafe_allow_html=True)
 
 st.dataframe(df_redux[df_redux['developers'] == ''])
 
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     Olhando alguns exemplares diretamente na loja steam só é possível inferir que por algum motivo o desenvoveldor\
     preferiu não ser identificado, e não há como saber o motivo.
@@ -220,7 +225,7 @@ st.markdown(at_lib.GetBasicTextMarkdown(20,
 
 st.divider()
 
-st.markdown(at_lib.GetBasicTextMarkdown(25,
+st.markdown(GetBasicTextMarkdown(25,
     '''
     Agora vamos dar uma olhada nas publicadoras
     '''),unsafe_allow_html=True)
@@ -238,7 +243,7 @@ with cols[2]:
 with cols[3]:
     st.metric(label="Desvio Padrão", value=f'{dev_df.std():.2f}')
 
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     Curiosamente tivemos um retrato bem parecido com a dos desenvolvedores, isso deve indicar que há muitas autopublicações\
     na loja Steam. Algo que teremos como confirmar mais a frente quando criamos a coluna self_published.
@@ -246,7 +251,7 @@ st.markdown(at_lib.GetBasicTextMarkdown(20,
 
 st.divider()
 
-st.markdown(at_lib.GetBasicTextMarkdown(25,
+st.markdown(GetBasicTextMarkdown(25,
     '''
     Agora vamos olhar um pouco para as avaliações dos jogos, afinal uma das premissas para esse estudo é de que\
     há uma boa relação entre quantidade de avaliações e as vendas de um jogo. Para isso foi feito um gráfico de dispersão\
@@ -260,7 +265,7 @@ sb.scatterplot(df_redux,x='positive', y='negative',hue='steamspy_owners',ax=ax)
 ax.ticklabel_format(style='plain', axis='both')
 st.pyplot(fig)
 
-st.markdown(at_lib.GetBasicTextMarkdown(25,
+st.markdown(GetBasicTextMarkdown(25,
     '''
     É possível observar alguns outliers que estão distorcendo a escala do gráfico, contudo, é possível observar que\
     há uma relação entre a quantidade de avaliações positivas e negativas, o que é esperado, afinal quanto mais\
@@ -272,7 +277,7 @@ st.markdown(at_lib.GetBasicTextMarkdown(25,
 
 st.divider()
 
-st.markdown(at_lib.GetBasicTextMarkdown(25,
+st.markdown(GetBasicTextMarkdown(25,
     '''
     Por fim vamos olhar os dados a respeito de duração dos jogos.
     '''),unsafe_allow_html=True)
@@ -281,7 +286,7 @@ fig, ax = plt.subplots(figsize=(10,5))
 sb.kdeplot(df_redux[df_redux['hltb_status'] == 'Found'],x=df_redux['hltb_main_story'],ax=ax,fill=True)
 st.pyplot(fig)
 
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     É possível observar a presença de algun(s) outliers bem fora da curva, o que está distorcendo muito o gráfico, vamos\
     colocar um limite de 200hrs máxima e refazer o gráfico.
@@ -293,7 +298,7 @@ sb.kdeplot(df_redux[(df_redux['hltb_status'] == 'Found') & (df_redux['hltb_main_
 x='hltb_main_story',ax=ax,fill=True)
 st.pyplot(fig)
 
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     Agora é possível observar que a maioria dos jogos tem uma duração entre 0 e 20 horas.
     '''),unsafe_allow_html=True)
@@ -306,7 +311,7 @@ with cols[2]:
     notFoundPercent = 100-foundPercent
     st.metric(label="Jogos sem dados no HTLB", value=f'{notFoundPercent:.2f}%')
 
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     Infelizmente a amostra de jogos com dados no HTLB é bem pequena, apenas 37.21% dos jogos possuem dados no HTLB,\
     o que irá nos exigir decidir entre inferir os dados faltantes ou remover os jogos sem dados no HTLB. Parte dessa\
@@ -319,7 +324,7 @@ st.markdown(at_lib.GetBasicTextMarkdown(20,
 
 st.divider()
 
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     '''
     Além de termos poucos dados a respeito de duração, será que podemos confiar neles?
     '''),unsafe_allow_html=True)
@@ -355,14 +360,14 @@ st.divider()
 
 ### Incluir a comparação entre scrap sucess e steamspy scrap sucess, para provar que quando acha em um acha no outro
 
-st.markdown(at_lib.GetBasicTextMarkdown(25,
+st.markdown(GetBasicTextMarkdown(25,
     '''
     Na próxima página iremos preparar os dados para a modelagem.
     '''),unsafe_allow_html=True)
     
 st.dataframe(df_redux,hide_index=True,height=250)
 
-st.markdown(at_lib.GetBasicTextMarkdown(20,
+st.markdown(GetBasicTextMarkdown(20,
     f'''
     O dataset atualmente possui {df_redux.shape[0]} linhas e {df_redux.shape[1]} colunas.
     '''),unsafe_allow_html=True)

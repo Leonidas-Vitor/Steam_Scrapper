@@ -14,12 +14,16 @@ def SetPageConfig(title='AT'):
         #page_title=title,
         layout="wide")
 
+SetPageConfig()
+
 def SetTheme():
     if 'sb_theme' not in st.session_state:
         with open("seabornTheme.json", 'r') as j:
             st.session_state['sb_theme'] = json.load(j)
     sb.set_theme(palette= st.session_state['sb_theme']['palette'],style= st.session_state['sb_theme']['style'])
     plt.rcParams.update(st.session_state['sb_theme']['plt_rcParams'])
+
+SetTheme()
 
 def GetBasicTextMarkdown(font_size: float, text: str, align = 'center'):
     return f"""<p style='text-align: {align}; font-size:{font_size}px;'><b>{text}</b></p>"""
@@ -31,7 +35,7 @@ st.header('Regressão linear',divider=True)
 #    processado agora.
 #    ''', icon="⚠️")
 
-#st.markdown(at_lib.GetBasicTextMarkdown(25,
+#st.markdown(GetBasicTextMarkdown(25,
 #    '''
 #    Teste2
 #    '''),unsafe_allow_html=True)
@@ -55,7 +59,7 @@ df_filtred = df_redux[df_redux['main_genre'] == option]
 #---------------- Faltou lugar para upar um novo csv
 
 with st.expander('Dataset preparado'):
-    st.markdown(at_lib.GetBasicTextMarkdown(20,
+    st.markdown(GetBasicTextMarkdown(20,
         f'''
         O dataset atualmente possui {df_filtred.shape[0]} linhas e {df_filtred.shape[1]} colunas.
         '''),unsafe_allow_html=True)
