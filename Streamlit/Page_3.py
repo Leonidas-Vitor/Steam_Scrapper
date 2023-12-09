@@ -4,7 +4,8 @@ import pandas as pd
 import seaborn as sb
 import streamlit as st
 import json
-#import ast
+import ast
+import os
 
 def SetPageConfig(title='AT'):
     st.set_page_config(
@@ -22,7 +23,7 @@ def SetTheme():
     sb.set_theme(palette= st.session_state['sb_theme']['palette'],style= st.session_state['sb_theme']['style'])
     plt.rcParams.update(st.session_state['sb_theme']['plt_rcParams'])
 
-SetTheme()
+#SetTheme()
 
 def GetBasicTextMarkdown(font_size: float, text: str, align = 'center'):
     return f"""<p style='text-align: {align}; font-size:{font_size}px;'><b>{text}</b></p>"""
@@ -36,7 +37,7 @@ st.markdown(GetBasicTextMarkdown(25,
     '''),unsafe_allow_html=True)
 
 
-df_redux = pd.read_json('SteamDatasetForStreamlit.json')
+df_redux = pd.read_csv('SteamDatasetForStreamlit.csv',engine='pyarrow')
 
 df_redux.drop(df_redux[df_redux['scrap_status'] != 'Scrap_Sucess'].index,inplace=True)
 df_redux.drop(df_redux[df_redux['type'] != 'game'].index,inplace=True)
@@ -102,7 +103,7 @@ st.markdown(GetBasicTextMarkdown(25,
 
 #Convertendo a coluna release_date para um dicionário
 #try:
-#df_redux['release_date'] = df_redux['release_date'].apply(ast.literal_eval)
+df_redux['release_date'] = df_redux['release_date'].apply(ast.literal_eval)
 #except Exception as e:
     #O dicionário já foi convertido
 #    pass
@@ -244,8 +245,8 @@ st.markdown(GetBasicTextMarkdown(20,
     #st.table(generosValidos)
 
 def GetMainGenre(tags):
-    #if (type(tags) == str):
-    #    tags= ast.literal_eval(tags)
+    if (type(tags) == str):
+        tags= ast.literal_eval(tags)
     st.text(type(tags))
     if (type(tags) == dict):
         #return max(tags, key=tags.get)
@@ -272,8 +273,8 @@ st.dataframe(df_redux[['main_genre']].value_counts().reset_index().rename(column
 #------------ Organização das tags
 
 def OrganizeTags(tags):
-    #if (type(tags) == str):
-    #    tags= ast.literal_eval(tags)
+    if (type(tags) == str):
+        tags= ast.literal_eval(tags)
 
     newList = []
     for tag in tags:
@@ -293,12 +294,12 @@ with cols[0]:
         '''),unsafe_allow_html=True)
 
 def IsEarlyAcess(genres):
-    #if (type(genres) == str and genres != ''):
-        #try:
-            #genres = ast.literal_eval(genres)
-        #except Exception as e:
-            #st.text(genres)
-            #pass
+    if (type(genres) == str and genres != ''):
+        try:
+            genres = ast.literal_eval(genres)
+        except Exception as e:
+            st.text(genres)
+            pass
     try:
         for g in genres:
             if g['description'] == 'Early Access':
@@ -338,7 +339,7 @@ st.markdown(GetBasicTextMarkdown(20,
     Coluna price agora está em formato numérico
     '''),unsafe_allow_html=True)
 
-#df_redux['price_overview'] = df_redux['price_overview'].apply(ast.literal_eval)
+df_redux['price_overview'] = df_redux['price_overview'].apply(ast.literal_eval)
 df_redux['price'] = df_redux['price_overview'].str['initial']/100
 
 columns = st.columns([0.5,0.5])
@@ -367,7 +368,7 @@ def ContainsTargetCategory(categories, target_category):
         #o jogo não possui categorias
         return False
 
-#df_redux['categories'] = df_redux['categories'].apply(ast.literal_eval)
+df_redux['categories'] = df_redux['categories'].apply(ast.literal_eval)
 
 df_redux['hasSingleplayer'] = df_redux['categories'].apply(lambda s : ContainsTargetCategory(s,'Single-player'))
 df_redux['hasMultiplayer'] = df_redux['categories'].apply(lambda s : ContainsTargetCategory(s,'Multi-player'))
@@ -420,14 +421,14 @@ def Is_sef_published(developers,publishers):
         #Ocorre quando não há dado de publicadora e/ou desenvolvedor (Nan)
         return 0
 
-#def ParseData(d):
-    #try:
-    #    return ast.literal_eval(d)
-    #except Exception as e:
-        #return d
+def ParseData(d):
+    try:
+        return ast.literal_eval(d)
+    except Exception as e:
+        return d
 
-#df_redux['developers'] = df_redux['developers'].apply(ParseData)
-#df_redux['publishers'] = df_redux['publishers'].apply(ParseData)
+df_redux['developers'] = df_redux['developers'].apply(ParseData)
+df_redux['publishers'] = df_redux['publishers'].apply(ParseData)
 
 df_redux['self_published_percent'] = df_redux.apply(lambda x: Is_sef_published(x.developers,x.publishers),axis=1)
 

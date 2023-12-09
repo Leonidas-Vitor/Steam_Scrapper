@@ -4,6 +4,7 @@ import pandas as pd
 import seaborn as sb
 import streamlit as st
 import json
+import os
 
 def SetPageConfig(title='AT'):
     st.set_page_config(
@@ -21,7 +22,7 @@ def SetTheme():
     sb.set_theme(palette= st.session_state['sb_theme']['palette'],style= st.session_state['sb_theme']['style'])
     plt.rcParams.update(st.session_state['sb_theme']['plt_rcParams'])
 
-SetTheme()
+#SetTheme()
 
 def GetBasicTextMarkdown(font_size: float, text: str, align = 'center'):
     return f"""<p style='text-align: {align}; font-size:{font_size}px;'><b>{text}</b></p>"""
@@ -90,7 +91,7 @@ with st.expander("Colunas do dataset original"):
 #st.text(path_json)
 
 with st.expander("Amostra do dataset original"):
-    df_sample = pd.read_json('SteamDatasetRawSample.json')
+    df_sample = pd.read_csv('SteamDatasetRawSample.csv',engine='pyarrow')
     st.dataframe(df_sample,hide_index=True)
 
 st.subheader('Dataset reduzido')
@@ -100,7 +101,7 @@ st.subheader('Dataset reduzido')
 #except Exception as e:
 #    df_redux = at_lib.ReadCSV('df_redux','SteamDatasetForStreamlit.csv').copy()
 
-df_redux = pd.read_json('SteamDatasetForStreamlit.json')
+df_redux = pd.read_csv('SteamDatasetForStreamlit.json')
     
 #= at_lib.ReadCSV('df_redux','SteamDatasetForStreamlit.csv')
 st.dataframe(df_redux,hide_index=True,height=250)

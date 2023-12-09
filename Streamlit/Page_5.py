@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
+import os
 
 def SetPageConfig(title='AT'):
     st.set_page_config(
@@ -25,7 +26,7 @@ def SetTheme():
     sb.set_theme(palette= st.session_state['sb_theme']['palette'],style= st.session_state['sb_theme']['style'])
     plt.rcParams.update(st.session_state['sb_theme']['plt_rcParams'])
 
-SetTheme()
+#SetTheme()
 
 def GetBasicTextMarkdown(font_size: float, text: str, align = 'center'):
     return f"""<p style='text-align: {align}; font-size:{font_size}px;'><b>{text}</b></p>"""
@@ -42,7 +43,7 @@ st.header('Regressão linear',divider=True)
 #    Teste2
 #    '''),unsafe_allow_html=True)
 
-df_redux = pd.read_json('SteamDatasetForStreamlitClean.json')
+df_redux = pd.read_csv('SteamDatasetForStreamlitClean.csv',engine='pyarrow')
 
 df_redux['positive_reviews_percent'].fillna(0,inplace=True)
 df_redux.dropna(inplace=True,subset='commercialization_days')
