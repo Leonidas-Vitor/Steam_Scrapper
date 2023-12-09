@@ -1,0 +1,11 @@
+streamlit
+pandas
+numpy
+ast
+json
+seaborn
+st_pages
+sklearn.model_selection
+sklearn.linear_model
+sklearn.metrics
+sklearn.preprocessing 
